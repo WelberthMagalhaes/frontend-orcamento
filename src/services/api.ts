@@ -33,11 +33,13 @@ export const orcamentosApi = {
 // Versões API
 export const versoesApi = {
   list: (orcamentoId: number) =>
-    api.get<VersaoOrcamento[]>(`/versoes-orcamento/${orcamentoId}`),
-  create: (data: Omit<VersaoOrcamento, "id" | "numero" | "criadaEm">) =>
-    api.post<VersaoOrcamento>("/versoes-orcamento", data),
-  getById: (id: number) => api.get<VersaoOrcamento>(`/versoes-orcamento/${id}`),
-  delete: (id: number) => api.delete(`/versoes-orcamento/${id}`),
+    api.get<VersaoOrcamento[]>(`/orcamentos/${orcamentoId}/versoes`),
+  create: (orcamentoId: number, data?: Record<string, unknown>) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes`, data || {}),
+  getById: (orcamentoId: number, versaoId: number) =>
+    api.get<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}`),
+  delete: (orcamentoId: number, versaoId: number) =>
+    api.delete(`/orcamentos/${orcamentoId}/versoes/${versaoId}`),
 };
 
 // Items Catálogo API
