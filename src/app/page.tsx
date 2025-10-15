@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import AdminLayout from '@/components/layout/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +9,9 @@ export default function Home() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">Dashboard</h2>
-          <Button>Novo Orçamento</Button>
+          <Link href="/orcamentos/novo">
+            <Button>Novo Orçamento</Button>
+          </Link>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
