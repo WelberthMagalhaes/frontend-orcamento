@@ -1,35 +1,44 @@
 export interface Cliente {
-  id: string;
+  id: number;
   nome: string;
+  telefone: string;
   email: string;
-  telefone?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Orcamento {
-  id: string;
-  clienteId: string;
+  id: number;
+  clienteId: number;
   cliente?: Cliente;
-  status: 'pendente' | 'aprovado' | 'rejeitado';
-  valorTotal: number;
-  createdAt: string;
-  updatedAt: string;
+  dataEvento: string;
+  localEvento: string;
+  numeroPessoas: number;
+  status: "rascunho" | "enviado" | "aprovado" | "rejeitado";
 }
 
-export interface ItemCatalogo {
-  id: string;
-  nome: string;
-  descricao?: string;
-  preco: number;
-  categoria?: string;
+export interface VersaoOrcamento {
+  id: number;
+  orcamentoId: number;
+  numero: number;
+  criadaEm: string;
+  itens?: ItemVersao[];
 }
 
-export interface ItemOrcamento {
-  id: string;
-  nome: string;
-  descricao?: string;
-  preco: number;
+export interface Item {
+  id: number;
+  descricao: string;
+  unidade: string;
+  valorPadrao: number;
+  criadoEm: string;
+  atualizadoEm: string;
+}
+
+export interface ItemVersao {
+  id: number;
+  versaoOrcamentoId: number;
+  itemId?: number;
+  item?: Item;
+  descricao: string;
   quantidade: number;
-  total: number;
+  unidade: string;
+  valorUnitario: number;
 }

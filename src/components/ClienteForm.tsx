@@ -14,7 +14,7 @@ import { Cliente } from '@/types';
 const clienteSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),
   email: z.string().email('Email inválido'),
-  telefone: z.string().optional(),
+  telefone: z.string().min(1, 'Telefone é obrigatório'),
 });
 
 type ClienteFormData = z.infer<typeof clienteSchema>;
@@ -33,7 +33,7 @@ export default function ClienteForm({ cliente, onSuccess, onCancel }: ClienteFor
     defaultValues: cliente ? {
       nome: cliente.nome,
       email: cliente.email,
-      telefone: cliente.telefone || '',
+      telefone: cliente.telefone,
     } : undefined,
   });
 
@@ -91,6 +91,7 @@ export default function ClienteForm({ cliente, onSuccess, onCancel }: ClienteFor
               id="telefone"
               {...register('telefone')}
               placeholder="(11) 99999-9999"
+              required
             />
           </div>
 

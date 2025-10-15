@@ -48,7 +48,7 @@ export default function ClientesPage() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (confirm("Tem certeza que deseja excluir este cliente?")) {
       try {
         await clientesApi.delete(id);
