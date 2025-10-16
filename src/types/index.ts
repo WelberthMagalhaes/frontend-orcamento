@@ -19,6 +19,7 @@ export interface VersaoOrcamento {
   id: number;
   orcamentoId: number;
   numero: number;
+  status: 'rascunho' | 'enviada' | 'aprovada' | 'rejeitada';
   criadaEm: string;
   itens?: ItemVersao[];
 }

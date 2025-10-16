@@ -38,6 +38,12 @@ export const versoesApi = {
     api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes`, data || {}),
   getById: (orcamentoId: number, versaoId: number) =>
     api.get<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}`),
+  enviar: (orcamentoId: number, versaoId: number) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/enviar`, {}),
+  aprovar: (orcamentoId: number, versaoId: number) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/aprovar`, {}),
+  rejeitar: (orcamentoId: number, versaoId: number) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/rejeitar`, {}),
   delete: (orcamentoId: number, versaoId: number) =>
     api.delete(`/orcamentos/${orcamentoId}/versoes/${versaoId}`),
 };
