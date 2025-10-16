@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import * as React from "react";
 import { useParams } from "next/navigation";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,8 @@ import {
 } from "@/components/ui/table";
 import { orcamentosApi, versoesApi } from "@/services/api";
 import { Orcamento, VersaoOrcamento } from "@/types";
+import VersaoOrcamentoActions from "@/components/VersaoOrcamentoActions";
+import HistoricoVersao from "@/components/HistoricoVersao";
 
 export default function OrcamentoDetalhePage() {
   const params = useParams();
@@ -75,65 +78,7 @@ export default function OrcamentoDetalhePage() {
     }
   };
 
-  const aprovarVersao = async (versaoId: number) => {
-    if (confirm("Tem certeza que deseja aprovar esta versão?")) {
-      try {
-        await versoesApi.aprovar(orcamentoId, versaoId);
-        loadVersoes();
-      } catch (error: unknown) {
-        const isAxiosError = (
-          err: unknown
-        ): err is {
-          response?: { data?: { message?: string } };
-          message?: string;
-        } => {
-          return typeof err === "object" && err !== null;
-        };
 
-        const errorMessage = isAxiosError(error)
-          ? error.response?.data?.message ||
-            error.message ||
-            "Erro desconhecido"
-          : "Erro desconhecido";
-
-        if (
-          errorMessage.toLowerCase().includes("já existe") ||
-          errorMessage.toLowerCase().includes("aprovada")
-        ) {
-          alert(`Erro: ${errorMessage}`);
-        } else {
-          console.error("Erro ao aprovar versão:", error);
-          alert(`Erro ao aprovar versão: ${errorMessage}`);
-        }
-      }
-    }
-  };
-
-  const rejeitarVersao = async (versaoId: number) => {
-    if (confirm("Tem certeza que deseja rejeitar esta versão?")) {
-      try {
-        await versoesApi.rejeitar(orcamentoId, versaoId);
-        loadVersoes();
-      } catch (error) {
-        console.error("Erro ao rejeitar versão:", error);
-      }
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "rascunho":
-        return "text-gray-600";
-      case "enviada":
-        return "text-blue-600";
-      case "aprovada":
-        return "text-green-600";
-      case "rejeitada":
-        return "text-red-600";
-      default:
-        return "text-gray-600";
-    }
-  };
 
   if (loading) {
     return (
@@ -198,61 +143,46 @@ export default function OrcamentoDetalhePage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Versão</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Status & Ações</TableHead>
                     <TableHead>Criada em</TableHead>
-                    <TableHead>Ações</TableHead>
+                    <TableHead>Outras Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {versoes.map((versao) => (
-                    <TableRow key={versao.id}>
-                      <TableCell>Versão {versao.numero}</TableCell>
-                      <TableCell>
-                        <span
-                          className={`font-medium ${getStatusColor(versao.status)}`}
-                        >
-                          {versao.status.charAt(0).toUpperCase() +
-                            versao.status.slice(1)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(versao.criadaEm).toLocaleString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            Ver Itens
-                          </Button>
-                          {versao.status === "rascunho" && (
-                            <>
-                              <Button variant="outline" size="sm">
-                                Editar
-                              </Button>
-                              <Button
-                                variant="default"
-                                size="sm"
-                                onClick={() => enviarVersao(versao.id)}
-                              >
-                                Enviar
-                              </Button>
-                            </>
-                          )}
-                          {versao.status === "enviada" && (
-                            <>
-                              <Button
-                                variant="default"
-                                size="sm"
-                                onClick={() => aprovarVersao(versao.id)}
-                              >
-                                Aprovar
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => rejeitarVersao(versao.id)}
-                              >
-                                Rejeitar
-                              </Button>
+                    <React.Fragment key={versao.id}>
+                      <TableRow>
+                        <TableCell>Versão {versao.numero}</TableCell>
+                        <TableCell>
+                          <VersaoOrcamentoActions
+                            versao={versao}
+                            orcamentoId={orcamentoId}
+                            onUpdate={loadVersoes}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {new Date(versao.criadaEm).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm">
+                              Ver Itens
+                            </Button>
+                            {versao.status === "rascunho" && (
+                              <>
+                                <Button variant="outline" size="sm">
+                                  Editar
+                                </Button>
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => enviarVersao(versao.id)}
+                                >
+                                  Enviar
+                                </Button>
+                              </>
+                            )}
+                            {versao.status === "enviada" && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -260,11 +190,19 @@ export default function OrcamentoDetalhePage() {
                               >
                                 Nova Versão
                               </Button>
-                            </>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} className="p-0">
+                          <HistoricoVersao
+                            orcamentoId={orcamentoId}
+                            versaoId={versao.id}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>

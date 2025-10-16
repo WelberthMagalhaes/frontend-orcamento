@@ -40,10 +40,14 @@ export const versoesApi = {
     api.get<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}`),
   enviar: (orcamentoId: number, versaoId: number) =>
     api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/enviar`, {}),
-  aprovar: (orcamentoId: number, versaoId: number) =>
-    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/aprovar`, {}),
-  rejeitar: (orcamentoId: number, versaoId: number) =>
-    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/rejeitar`, {}),
+  aprovar: (orcamentoId: number, versaoId: number, usuarioId?: number) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/aprovar`, { usuarioId }),
+  rejeitar: (orcamentoId: number, versaoId: number, usuarioId?: number) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/rejeitar`, { usuarioId }),
+  reabrir: (orcamentoId: number, versaoId: number, motivo?: string) =>
+    api.post<VersaoOrcamento>(`/orcamentos/${orcamentoId}/versoes/${versaoId}/reabrir`, { motivo }),
+  getHistorico: (orcamentoId: number, versaoId: number) =>
+    api.get(`/orcamentos/${orcamentoId}/versoes/${versaoId}/historico`),
   delete: (orcamentoId: number, versaoId: number) =>
     api.delete(`/orcamentos/${orcamentoId}/versoes/${versaoId}`),
 };
